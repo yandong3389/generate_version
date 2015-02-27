@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project name="uploader">
+    <description>uploader Build File</description>
+    <!--当前文件目录路径-->
+    <dirname property="current.dir" file="${ant.file.uploader}" />
+    <!--配置文件路径-->
+    <property file="build.properties" />
+    <!-- 压缩CSS JS文件的路径 -->
+    <property name="cssjsPath" location="D:/workspace/vessel/web" />
+    <property name="classpath" location="${current.dir}/../bin/" />
+    <path id="yuiClasspath">
+        <fileset dir="${current.dir}/../lib">
+            <include name="yuicompressor.jar" />
+            <include name="YUIAnt.jar" />
+        </fileset>
+    </path>
+    <path id="svnkitClasspath">
+        <pathelement path="${classpath}" />
+        <fileset dir="${current.dir}/../lib">
+            <include name="svnkit-1.7.4-v1.jar" />
+        </fileset>
+    </path>
+
+    <target name="generate_js_css_version" description="生成jsp中js及css的svn版本号">
+        <!--运行-->
+        <java classpathref="svnkitClasspath" classname="com.clbus.common.util.GenerateVersionUtils">
+        </java>
+    </target>
+
+    <target name="compres_js_css" description="压缩 js css 文件">
+        <taskdef name="yuicompress" classname="com.yahoo.platform.yui.compressor.YUICompressTask">
+            <classpath>
+                <path refid="yuiClasspath" />
+            </classpath>
+        </taskdef>
+        <yuicompress linebreak="900000" warn="false" munge="yes" preserveallsemicolons="true" outputfolder="${cssjsPath}">
+            <fileset dir="${cssjsPath}">
+                <include name="**/*.js" />
+                <include name="**/*.css" />
+            </fileset>
+        </yuicompress>
+    </target>
+</project>
